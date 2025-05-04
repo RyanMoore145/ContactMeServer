@@ -1,4 +1,5 @@
 
+const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
@@ -9,20 +10,26 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
-const transporter = nodemailer.createTransport({
-	host: "smtp.gmail.com",
-	port: 465,
-	secure: true,
-	requireTLS: true,
-	auth: {
-		user: process.env.SYSTEM_EMAIL,
-		pass: process.env.SYSTEM_EMAIL_PASSWORD
-	}
-});
+init();
 
-app.listen(port, () => {
-	console.log(`listening on port ${port}`);
-});	
+function init() {
+	transporter = nodemailer.createTransport({
+		host: "smtp.office365.com",
+		port: 587,
+		secureConnection: false,
+		auth: {
+			user: process.env.SYSTEM_EMAIL,
+			pass: process.env.SYSTEM_EMAIL_PASSWORD
+		},
+		tls: {
+			ciphers: "SSLv3"
+		}
+	});
+
+	app.listen(port, () => {
+		console.log(`listening on port ${port}`);
+	});		
+}
 
 
 function validateEmail(email) {
@@ -33,7 +40,7 @@ function validateEmail(email) {
 
 function sendEmail(senderEmail, emailHeader, emailBody) {
 	let mailOptions = {
-		from: `${process.env.SYSTEM_EMAIL}`,
+		from: `Ryan Moore <${process.env.SYSTEM_EMAIL}>`,
 		to: senderEmail,
 		subject: emailHeader,
 		text: emailBody
