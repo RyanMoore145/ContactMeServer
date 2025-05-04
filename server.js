@@ -1,5 +1,4 @@
 
-const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
@@ -10,26 +9,22 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
-init();
+const transporter = nodemailer.createTransport({
+	host: "smtp.office365.com",
+	port: 587,
+	secureConnection: false,
+	auth: {
+		user: process.env.SYSTEM_EMAIL,
+		pass: process.env.SYSTEM_EMAIL_PASSWORD
+	},
+	tls: {
+		ciphers: "SSLv3"
+	}
+});
 
-function init() {
-	transporter = nodemailer.createTransport({
-		host: "smtp.office365.com",
-		port: 587,
-		secureConnection: false,
-		auth: {
-			user: process.env.SYSTEM_EMAIL,
-			pass: process.env.SYSTEM_EMAIL_PASSWORD
-		},
-		tls: {
-			ciphers: "SSLv3"
-		}
-	});
-
-	app.listen(port, () => {
-		console.log(`listening on port ${port}`);
-	});		
-}
+app.listen(port, () => {
+	console.log(`listening on port ${port}`);
+});		
 
 
 function validateEmail(email) {
