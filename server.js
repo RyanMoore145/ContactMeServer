@@ -39,11 +39,18 @@ function validateEmail(email) {
 }
 
 function sendEmail(senderEmail, emailHeader, emailBody) {
+	let fullHeader = `Message to Ryan Moore: ${emailHeader}`;
+	let fullBody = `
+		<h4>You have sent the following message to Ryan Moore:</h4>
+		<p>${emailBody}</p>
+		<h4>I will get back to you via this email thread or your prefered contact method as soon as I can.</h4>
+		<p>Cheers, Ryan Moore</p>
+		<p>(This message was sent automatically)</p>`;
 	let mailOptions = {
 		from: `Ryan Moore <${process.env.SYSTEM_EMAIL}>`,
-		to: senderEmail,
-		subject: emailHeader,
-		text: emailBody
+		to: `${senderEmail}, ${process.env.PERSONAL_EMAIL}`,
+		subject: fullHeader,
+		html: fullBody
 	};
 	
 	transporter.sendMail(mailOptions, (error, info) => {
